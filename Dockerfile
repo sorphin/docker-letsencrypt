@@ -1,4 +1,4 @@
-FROM lsiobase/nginx:3.11
+FROM lsiobase/nginx:3.12
 
 # set version label
 ARG BUILD_DATE
@@ -67,7 +67,6 @@ RUN \
 	php7-pdo_sqlite \
 	php7-pear \
 	php7-pecl-apcu \
-	php7-pecl-imagick \
 	php7-pecl-redis \
 	php7-pgsql \
 	php7-phar \
@@ -83,7 +82,8 @@ RUN \
 	php7-zip \
 	py3-cryptography \
 	py3-future \
-	py3-pip && \
+	py3-pip \
+	whois && \
  echo "**** install certbot plugins ****" && \
  if [ -z ${CERTBOT_VERSION+x} ]; then \
         CERTBOT="certbot"; \
@@ -131,6 +131,9 @@ RUN \
 	/defaults/proxy-confs --strip-components=1 --exclude=linux*/.gitattributes --exclude=linux*/.github --exclude=linux*/.gitignore --exclude=linux*/LICENSE && \
  echo "**** configure nginx ****" && \
  rm -f /etc/nginx/conf.d/default.conf && \
+ curl -o \
+	/defaults/dhparams.pem -L \
+	"https://lsio.ams3.digitaloceanspaces.com/dhparams.pem" && \
  echo "**** cleanup ****" && \
  apk del --purge \
 	build-dependencies && \
